@@ -1,0 +1,45 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    "usernames": {
+      "$key": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.val() === auth.uid) && (!newData.exists() || newData.val() === auth.uid)"
+      }
+    },
+
+    "bans": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": false
+      }
+    },
+
+    "rooms": {
+      ".read": "auth != null",
+      "$code": {
+        ".write": "auth != null && (!data.exists() || data.child('playerX/id').val() === auth.uid || data.child('playerO/id').val() === auth.uid || !data.child('playerO').exists())",
+        ".validate": "newData.hasChildren(['status', 'board', 'turn'])"
+      }
+    },
+
+    "matchmaking": {
+      "waiting": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "matches": {
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          ".write": "auth != null"
+        }
+      }
+    }
+  }
+}
