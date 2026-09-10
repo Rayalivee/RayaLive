@@ -1,4 +1,3 @@
-
 import { db } from "./firebase.js";
 import { ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
@@ -8,8 +7,7 @@ export const NAME_COLORS = [
   { key: "morado", label: "Morado", hex: "#8B5CF6" },
   { key: "naranja", label: "Naranja", hex: "#F2994A" },
   { key: "cian", label: "Cian", hex: "#17A2B8" },
-  { key: "dorado", label: "Dorado", hex: "#C9A227" },
-  { key: "rosa-hello-kitty", label: "Rosa Hello Kitty", hex: "#FF69B4" }
+  { key: "dorado", label: "Dorado", hex: "#C9A227" }
 ];
 
 export const RANDOM_NAME_COLOR_PRICE = 12;
@@ -35,18 +33,13 @@ export async function purchaseRandomNameColor(userId) {
 
     if (user.coins < RANDOM_NAME_COLOR_PRICE) return;
 
-    const notOwned = NAME_COLORS.filter(
-      (c) => !user.unlockedColors[c.key]
-    );
-
+    const notOwned = NAME_COLORS.filter((c) => !user.unlockedColors[c.key]);
     const pool = notOwned.length > 0 ? notOwned : NAME_COLORS;
-
     picked = pool[Math.floor(Math.random() * pool.length)];
 
     user.coins -= RANDOM_NAME_COLOR_PRICE;
     user.unlockedColors[picked.key] = true;
     user.nameColor = picked.hex;
-
     return user;
   });
 
@@ -59,36 +52,25 @@ export async function purchaseRandomNameColor(userId) {
 
 export async function equipNameColor(userId, hexOrEmpty) {
   const userRef = ref(db, "users/" + userId);
-
   await runTransaction(userRef, (user) => {
     if (!user) return user;
-
     const unlocked = user.unlockedColors || {};
-
     const owns =
       hexOrEmpty === "" ||
       Object.keys(unlocked).some(
-        (key) =>
-          NAME_COLORS.find((c) => c.key === key)?.hex === hexOrEmpty
+        (key) => NAME_COLORS.find((c) => c.key === key)?.hex === hexOrEmpty
       );
-
     if (!owns) return;
-
     user.nameColor = hexOrEmpty;
-
     return user;
   });
 }
 
 export async function purchaseSymbolColor(userId, colorKey) {
   const item = SYMBOL_COLORS.find((c) => c.key === colorKey);
-
-  if (!item) {
-    throw new Error("Ese color no existe.");
-  }
+  if (!item) throw new Error("Ese color no existe.");
 
   const userRef = ref(db, "users/" + userId);
-
   const result = await runTransaction(userRef, (user) => {
     if (!user) return user;
 
@@ -97,13 +79,11 @@ export async function purchaseSymbolColor(userId, colorKey) {
 
     if (!user.unlockedSymbolColors[colorKey]) {
       if (user.coins < item.price) return;
-
       user.coins -= item.price;
       user.unlockedSymbolColors[colorKey] = true;
     }
 
     user.symbolColor = item.hex;
-
     return user;
   });
 
@@ -114,23 +94,16 @@ export async function purchaseSymbolColor(userId, colorKey) {
 
 export async function equipSymbolColor(userId, hexOrEmpty) {
   const userRef = ref(db, "users/" + userId);
-
   await runTransaction(userRef, (user) => {
     if (!user) return user;
-
     const unlocked = user.unlockedSymbolColors || {};
-
     const owns =
       hexOrEmpty === "" ||
       Object.keys(unlocked).some(
-        (key) =>
-          SYMBOL_COLORS.find((c) => c.key === key)?.hex === hexOrEmpty
+        (key) => SYMBOL_COLORS.find((c) => c.key === key)?.hex === hexOrEmpty
       );
-
     if (!owns) return;
-
     user.symbolColor = hexOrEmpty;
-
     return user;
   });
 }
