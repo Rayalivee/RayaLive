@@ -2,7 +2,7 @@ import { db } from "./firebase.js";
 import { ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
 export const NAME_COLORS = [
-  { key: "azul", label: "Azul", hex: "#2E7DD6" },
+  { key: "HELLO KITTY", label: "HELLO KITTY", hex: "#FF1493" },
   { key: "verde", label: "Verde", hex: "#1FA774" },
   { key: "morado", label: "Morado", hex: "#8B5CF6" },
   { key: "naranja", label: "Naranja", hex: "#F2994A" },
@@ -13,7 +13,7 @@ export const NAME_COLORS = [
 export const RANDOM_NAME_COLOR_PRICE = 12;
 
 export const SYMBOL_COLORS = [
-  { key: "sym-azul", label: "Azul", hex: "#2E7DD6", price: 8 },
+  { key: "sym-HELLO KITTY", label: "HELLO KITTY", hex: "#FF1493", price: 999999999999999999999999999999999999999999999999999999 },
   { key: "sym-verde", label: "Verde", hex: "#1FA774", price: 8 },
   { key: "sym-morado", label: "Morado", hex: "#8B5CF6", price: 12 },
   { key: "sym-naranja", label: "Naranja", hex: "#F2994A", price: 12 },
