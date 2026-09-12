@@ -2,9 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>RayaLive</title>
-<link rel="icon" href="data:,">
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#111111" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-180.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="RayaLive" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css" />
@@ -15,7 +22,7 @@
 
   <header class="top">
     <div class="brand">
-      <!-- Logo vacío a propósito: pon aquí tu <img src="logo.png" /> cuando lo tengas -->
+      
       <span class="brand-mark" aria-hidden="true"></span>
       <span class="brand-name">RayaLive</span>
     </div>
@@ -25,8 +32,7 @@
       <span id="user-streak-label" class="user-streak">🔥 Racha: 0</span>
     </button>
   </header>
-
-  <!-- ==================== MENÚ ==================== -->
+  
   <section id="view-menu" class="view">
     <h1 class="headline">Partidas rápidas de tres en raya.</h1>
     <p class="sub">Crea una sala y pásale el código a otra persona, únete a una que ya exista, deja que te emparejemos con quien esté buscando, o juega contra la máquina.</p>
@@ -58,7 +64,11 @@
       </button>
       <button class="option-card" id="btn-store">
         <span class="option-title">Tienda</span>
-        <span class="option-desc">Gasta las monedas que ganas jugando en colores para tu nombre.</span>
+        <span class="option-desc">Gasta las monedas que ganas jugando en colores.</span>
+      </button>
+      <button class="option-card" id="btn-inventory">
+        <span class="option-title">Inventario</span>
+        <span class="option-desc">Equipa los colores que ya has comprado.</span>
       </button>
     </div>
 
@@ -81,8 +91,7 @@
       <button id="ai-start" class="btn-primary full">Empezar partida</button>
     </div>
   </section>
-
-  <!-- ==================== RANKING ==================== -->
+  
   <section id="view-ranking" class="view hidden">
     <div class="ranking-head">
       <h2 class="headline small">Ranking</h2>
@@ -92,8 +101,7 @@
     <ol id="ranking-list" class="ranking-list"></ol>
     <p id="ranking-empty" class="hint hidden">Todavía no hay partidas jugadas.</p>
   </section>
-
-  <!-- ==================== LOGROS ==================== -->
+  
   <section id="view-achievements" class="view hidden">
     <div class="ranking-head">
       <h2 class="headline small">Logros</h2>
@@ -102,14 +110,13 @@
     <p id="achievements-total" class="sub small">0 / 1000 logros desbloqueados</p>
     <div id="achievements-list" class="achievements-list"></div>
   </section>
-
-  <!-- ==================== TIENDA ==================== -->
+  
   <section id="view-store" class="view hidden">
     <div class="ranking-head">
       <h2 class="headline small">Tienda</h2>
       <button id="store-back" class="btn-ghost">Volver</button>
     </div>
-    <p class="sub small">Ganas 2 monedas cada vez que ganas una partida online.</p>
+    <p class="sub small">Ganas 2 monedas cada vez que ganas una partida online. Compra aquí — para equipar lo que ya tienes, ve a Inventario.</p>
     <p id="store-coins" class="coins-badge">🪙 0 monedas</p>
 
     <h3 class="store-section-title">Color del nombre</h3>
@@ -122,21 +129,32 @@
       </div>
       <button id="store-random-buy" class="btn-primary">Comprar</button>
     </div>
-    <div id="store-name-list" class="store-list"></div>
 
     <h3 class="store-section-title">Color del símbolo (tu X / O)</h3>
     <p class="sub small">Este sí lo eliges tú, y se ve en el tablero — tuyo y el que ve tu rival.</p>
     <div id="store-symbol-list" class="store-list"></div>
   </section>
+  
+  <section id="view-inventory" class="view hidden">
+    <div class="ranking-head">
+      <h2 class="headline small">Inventario</h2>
+      <button id="inventory-back" class="btn-ghost">Volver</button>
+    </div>
+    <p class="sub small">Aquí equipas lo que ya has comprado en la Tienda.</p>
 
-  <!-- ==================== BUSCANDO PARTIDA ==================== -->
+    <h3 class="store-section-title">Color del nombre</h3>
+    <div id="inventory-name-list" class="store-list"></div>
+
+    <h3 class="store-section-title">Color del símbolo (tu X / O)</h3>
+    <div id="inventory-symbol-list" class="store-list"></div>
+  </section>
+  
   <section id="view-searching" class="view hidden">
     <h2 class="headline small">Buscando rival…</h2>
     <p class="sub">En cuanto haya alguien libre, empezáis directamente.</p>
     <button id="cancel-search" class="btn-ghost">Cancelar búsqueda</button>
   </section>
-
-  <!-- ==================== SALA DE ESPERA ==================== -->
+  
   <section id="view-waiting" class="view hidden">
     <h2 class="headline small">Esperando rival…</h2>
     <p class="sub">Comparte este código con la otra persona:</p>
@@ -145,8 +163,7 @@
     <p class="hint">La partida empezará automáticamente en cuanto alguien se una.</p>
     <button id="cancel-waiting" class="btn-ghost">Cancelar</button>
   </section>
-
-  <!-- ==================== TABLERO ==================== -->
+  
   <section id="view-game" class="view hidden">
     <div class="game-head">
       <div class="players-row">
@@ -182,7 +199,6 @@
 
 </div>
 
-<!-- Mensaje de bienvenida: sale siempre al entrar -->
 <div id="welcome-modal" class="modal hidden">
   <div class="modal-card">
     <p class="welcome-version">RayaLive v<span id="welcome-version-num">3.0</span></p>
@@ -192,7 +208,6 @@
   </div>
 </div>
 
-<!-- Modal para poner nombre -->
 <div id="name-modal" class="modal hidden">
   <div class="modal-card">
     <h3>¿Cómo te llamas?</h3>
@@ -209,7 +224,6 @@
   </div>
 </div>
 
-<!-- Modal de estadísticas de un jugador (al hacer click en su nombre en partida) -->
 <div id="player-stats-modal" class="modal hidden">
   <div class="modal-card">
     <h3 id="player-stats-name">Jugador</h3>
@@ -218,7 +232,6 @@
   </div>
 </div>
 
-<!-- Modal de resultado + revancha -->
 <div id="result-modal" class="modal hidden">
   <div class="modal-card">
     <h2 id="result-title" class="result-title">—</h2>
@@ -240,7 +253,6 @@
   </div>
 </div>
 
-<!-- Pantalla de baneo: cubre toda la app si tu cuenta está baneada -->
 <div id="banned-screen" class="banned-screen hidden">
   <div class="banned-card">
     <h1 class="banned-title">BANEADO</h1>
