@@ -1,0 +1,153 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "usernames": {
+      "$key": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.val() === auth.uid) && (!newData.exists() || newData.val() === auth.uid)"
+      }
+    },
+    "bans": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": false
+      }
+    },
+    "rooms": {
+      ".read": "auth != null",
+      "$code": {
+        ".write": "auth != null && (!data.exists() || data.child('playerX/id').val() === auth.uid || data.child('playerO/id').val() === auth.uid || !data.child('playerO').exists())",
+        ".validate": "newData.hasChildren(['status', 'board', 'turn'])"
+      }
+    },
+    "news": {
+      ".read": "auth != null",
+      ".indexOn": [
+        "createdAt"
+      ],
+      "$id": {
+        ".write": "auth != null && (root.child('usernames').child('themontes').val() === auth.uid)",
+        ".validate": "!newData.exists() || (newData.hasChildren(['title', 'body', 'createdAt', 'authorId']) && newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 80 && newData.child('body').isString() && newData.child('body').val().length > 0 && newData.child('body').val().length <= 2000 && newData.child('authorId').val() === auth.uid && newData.child('createdAt').isNumber())"
+      }
+    },
+    "matchmaking": {
+      "waiting": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "$mode": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      },
+      "queues": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "$mode": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      },
+      "matches": {
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          ".write": "auth != null"
+        }
+      }
+    },
+    "tournaments": {
+      ".read": "auth != null",
+      ".indexOn": [
+        "startAt"
+      ],
+      "$tid": {
+        ".write": "auth != null && root.child('usernames').child('themontes').val() === auth.uid",
+        "players": {
+          "$uid": {
+            ".write": "auth != null && (auth.uid === $uid || root.child('usernames').child('themontes').val() === auth.uid)"
+          }
+        },
+        "queue": {
+          ".read": "auth != null",
+          ".write": "auth != null && root.child('tournaments').child($tid).child('players').child(auth.uid).exists()",
+          "$uid": {
+            ".write": "auth != null && (auth.uid === $uid || root.child('tournaments').child($tid).child('players').child(auth.uid).exists())"
+          }
+        },
+        "matches": {
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": "auth != null && root.child('tournaments').child($tid).child('players').child(auth.uid).exists()"
+          }
+        },
+        "penalties": {
+          "$uid": {
+            ".read": "auth != null",
+            ".write": "auth != null && (auth.uid === $uid || root.child('tournaments').child($tid).child('players').child(auth.uid).exists())"
+          }
+        }
+      }
+    },
+    "friendRequests": {
+      "$toUid": {
+        ".read": "auth != null && auth.uid === $toUid",
+        "$fromUid": {
+          ".read": "auth != null && (auth.uid === $toUid || auth.uid === $fromUid)",
+          ".write": "auth != null && (auth.uid === $fromUid || auth.uid === $toUid)",
+          ".validate": "!newData.exists() || (newData.child('fromName').isString() && newData.child('fromName').val().length > 0 && newData.child('ts').isNumber())"
+        }
+      }
+    },
+    "friends": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$fid": {
+          ".write": "auth != null && (auth.uid === $uid || auth.uid === $fid)",
+          ".validate": "!newData.exists() || (newData.child('name').isString() && newData.child('since').isNumber())"
+        }
+      }
+    },
+    "lobbies": {
+      ".read": "auth != null",
+      "$lid": {
+        ".write": "auth != null && (!data.exists() && newData.child('hostId').val() === auth.uid || data.exists() && data.child('hostId').val() === auth.uid)",
+        "members": {
+          "$uid": {
+            ".write": "auth != null && (auth.uid === $uid || root.child('lobbies').child($lid).child('hostId').val() === auth.uid)"
+          }
+        },
+        "searching": {
+          ".write": "auth != null && root.child('lobbies').child($lid).child('members').child(auth.uid).exists()"
+        },
+        "playSignal": {
+          ".write": "auth != null && root.child('lobbies').child($lid).child('members').child(auth.uid).exists()"
+        },
+        "cancelSignal": {
+          ".write": "auth != null && root.child('lobbies').child($lid).child('members').child(auth.uid).exists()"
+        },
+        "mode": {
+          ".write": "auth != null && root.child('lobbies').child($lid).child('hostId').val() === auth.uid"
+        },
+        "maxSize": {
+          ".write": "auth != null && root.child('lobbies').child($lid).child('hostId').val() === auth.uid"
+        },
+        "status": {
+          ".write": "auth != null && root.child('lobbies').child($lid).child('hostId').val() === auth.uid"
+        }
+      }
+    },
+    "lobbyInvites": {
+      "$toUid": {
+        ".read": "auth != null && auth.uid === $toUid",
+        "$iid": {
+          ".write": "auth != null && (auth.uid === $toUid || newData.child('fromId').val() === auth.uid || !newData.exists())",
+          ".validate": "!newData.exists() || (newData.hasChildren(['lobbyId', 'fromId', 'fromName', 'ts']))"
+        }
+      }
+    }
+  }
+}

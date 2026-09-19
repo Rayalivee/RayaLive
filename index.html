@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>RayaLive</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#111111" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-180.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="RayaLive" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">RayaLive</span>
+    </div>
+    <button id="user-chip" class="user-chip" title="Cambiar nombre">
+      <span id="user-name-label">Jugador</span>
+      <span id="user-id-label" class="user-id"></span>
+      <span id="user-streak-label" class="user-streak">🔥 Racha: 0</span>
+    </button>
+  </header>
+  
+  <section id="view-menu" class="view">
+    <h1 class="headline">Partidas rápidas de tres en raya.</h1>
+    <p class="sub">Elige modo (1vs1 hasta 4vs4), busca partida o crea una sala, únete con código, o juega contra la máquina.</p>
+
+    <div class="menu-grid">
+      <button class="option-card" id="btn-search">
+        <span class="option-title">Buscar partida</span>
+        <span class="option-desc">Te empareja al momento con alguien que también esté buscando rival.</span>
+      </button>
+      <button class="option-card" id="btn-join">
+        <span class="option-title">Unirme con código</span>
+        <span class="option-desc">Introduce el código de una sala que te hayan pasado.</span>
+      </button>
+      <button class="option-card" id="btn-create">
+        <span class="option-title">Crear sala</span>
+        <span class="option-desc">Genera un código nuevo y espera a que se una alguien.</span>
+      </button>
+      <button class="option-card" id="btn-ai">
+        <span class="option-title">Jugar contra la IA</span>
+        <span class="option-desc">Partida al momento, sin esperar a nadie.</span>
+      </button>
+      <button class="option-card" id="btn-ranking">
+        <span class="option-title">Ranking</span>
+        <span class="option-desc">Consulta el top global por victorias.</span>
+      </button>
+      <button class="option-card" id="btn-friends">
+        <span class="option-title">Amigos <span id="friends-badge" class="news-badge hidden">0</span></span>
+        <span class="option-desc">Añade amigos, crea lobbies e invítalos a jugar.</span>
+      </button>
+      <button class="option-card" id="btn-tournaments">
+        <span class="option-title">Torneos</span>
+        <span class="option-desc">Compite por premios. Inscripciones, requisitos y clasificación.</span>
+      </button>
+      <button class="option-card" id="btn-news">
+        <span class="option-title">Novedades <span id="news-badge" class="news-badge hidden">0</span></span>
+        <span class="option-desc">Anuncios y actualizaciones del juego en tiempo real.</span>
+      </button>
+      <button class="option-card" id="btn-achievements">
+        <span class="option-title">Logros</span>
+        <span class="option-desc">Desafíos concretos que se van desbloqueando al jugar.</span>
+      </button>
+      <button class="option-card" id="btn-store">
+        <span class="option-title">Tienda</span>
+        <span class="option-desc">Gasta las monedas que ganas jugando en colores.</span>
+      </button>
+      <button class="option-card" id="btn-inventory">
+        <span class="option-title">Inventario</span>
+        <span class="option-desc">Equipa los colores que ya has comprado.</span>
+      </button>
+    </div>
+
+    <div id="join-panel" class="inline-panel hidden">
+      <label for="join-code-input">Código de sala</label>
+      <div class="inline-row">
+        <input id="join-code-input" maxlength="5" placeholder="AB12C" autocomplete="off" />
+        <button id="join-confirm" class="btn-primary">Entrar</button>
+      </div>
+      <p id="join-error" class="error-text"></p>
+    </div>
+
+    <div id="ai-panel" class="inline-panel hidden">
+      <label>Dificultad de la IA</label>
+      <div class="pill-row" id="difficulty-row">
+        <button class="pill" data-diff="facil">Fácil</button>
+        <button class="pill" data-diff="normal">Normal</button>
+        <button class="pill active" data-diff="imposible">Imposible</button>
+      </div>
+      <button id="ai-start" class="btn-primary full">Empezar partida</button>
+    </div>
+  </section>
+  
+  <section id="view-ranking" class="view hidden">
+    <div class="ranking-head">
+      <h2 class="headline small">Ranking</h2>
+      <button id="ranking-back" class="btn-ghost">Volver</button>
+    </div>
+    <p class="sub small">Jugadores ordenados por número de victorias.</p>
+    <ol id="ranking-list" class="ranking-list"></ol>
+    <p id="ranking-empty" class="hint hidden">Todavía no hay partidas jugadas.</p>
+  </section>
+  
+  <section id="view-achievements" class="view hidden">
+    <div class="ranking-head">
+      <h2 class="headline small">Logros</h2>
+      <button id="achievements-back" class="btn-ghost">Volver</button>
+    </div>
+    <p id="achievements-total" class="sub small">0 / 1000 logros desbloqueados</p>
+    <div id="achievements-list" class="achievements-list"></div>
+  </section>
+  
+  <section id="view-store" class="view hidden">
+    <div class="ranking-head">
+      <h2 class="headline small">Tienda</h2>
+      <button id="store-back" class="btn-ghost">Volver</button>
+    </div>
+    <p class="sub small">Ganas 2 monedas cada vez que ganas una partida online. Compra aquí — para equipar lo que ya tienes, ve a Inventario.</p>
+    <p id="store-coins" class="coins-badge">🪙 0 monedas</p>
+
+    <h3 class="store-section-title">Color del nombre</h3>
+    <p class="sub small">Se compra a ciegas: te toca uno al azar de los que aún no tengas.</p>
+    <div class="store-item">
+      <span class="store-swatch store-swatch-random">🎲</span>
+      <div class="store-info">
+        <span class="store-name">Color aleatorio</span>
+        <span class="store-price" id="store-random-price">12 monedas</span>
+      </div>
+      <button id="store-random-buy" class="btn-primary">Comprar</button>
+    </div>
+
+    <h3 class="store-section-title">Color del símbolo (tu X / O)</h3>
+    <p class="sub small">Este sí lo eliges tú, y se ve en el tablero — tuyo y el que ve tu rival.</p>
+    <div id="store-symbol-list" class="store-list"></div>
+  </section>
+  
+  <section id="view-inventory" class="view hidden">
+    <div class="ranking-head">
+      <h2 class="headline small">Inventario</h2>
+      <button id="inventory-back" class="btn-ghost">Volver</button>
+    </div>
+    <p class="sub small">Aquí equipas lo que ya has comprado en la Tienda.</p>
+
+    <h3 class="store-section-title">Color del nombre</h3>
+    <div id="inventory-name-list" class="store-list"></div>
+
+    <h3 class="store-section-title">Color del símbolo (tu X / O)</h3>
+    <div id="inventory-symbol-list" class="store-list"></div>
+  </section>
+  
+
+
+
+  <section id="view-friends" class="view hidden">
+    <div class="ranking-head">
+      <h2 class="headline small">Amigos</h2>
+      <button id="friends-back" class="btn-ghost">Volver</button>
+    </div>
+    <p class="sub small">Añade amigos por nombre y crea una lobby para jugar juntos.</p>
+
+    <div class="news-admin" style="display:flex;">
+      <h3 class="store-section-title" style="margin-top:0;">Añadir amigo</h3>
+      <label for="friend-name-input">Nombre exacto</label>
+      <div class="inline-row">
+        <input id="friend-name-input" maxlength="20" placeholder="Nombre del jugador" autocomplete="off" />
+        <button id="friend-add-btn" class="btn-primary">Enviar</button>
+      </div>
+      <p id="friend-add-error" class="error-text"></p>
+    </div>
+
+    <h3 class="store-section-title">Solicitudes recibidas</h3>
+    <div id="friend-requests-list" class="friends-list"></div>
+    <p id="friend-requests-empty" class="hint">No tienes solicitudes.</p>
+
+    <h3 class="store-section-title">Tu lista</h3>
+    <div id="friends-list" class="friends-list"></div>
+    <p id="friends-empty" class="hint">Aún no tienes amigos.</p>
+
+    <button id="btn-create-lobby" class="btn-primary full" style="margin-top:16px;">Crear lobby con amigos</button>
+  </section>
+
+  <section id="view-party-lobby" class="view hidden">
+    <div class="ranking-head">
+      <h2 class="headline small">Lobby</h2>
+      <button id="party-lobby-back" class="btn-ghost">Menú</button>
+    </div>
+    <p class="sub small" id="party-lobby-meta">DUO · 1/2</p>
+
+    <div class="party-mode-row" id="party-mode-row">
+      <button class="pill" data-party="SOLO">SOLO</button>
+      <button class="pill active" data-party="DUO">DUO</button>
+      <button class="pill" data-party="TRIO">TRIO</button>
+      <button class="pill" data-party="SQUAD">SQUAD</button>
+    </div>
+
+    <h3 class="store-section-title">Miembros</h3>
+    <ul id="party-members" class="team-list party-members-list"></ul>
+
+    <div class="td-actions" style="margin-top:14px;">
+      <button id="party-play-btn" class="btn-primary full">Jugar partida</button>
+      <button id="party-leave-btn" class="btn-ghost full">Abandonar lobby</button>
+    </div>
+
+    <h3 class="store-section-title">Invitar amigo</h3>
+    <div id="party-invite-list" class="friends-list"></div>
+    <p id="party-invite-empty" class="hint hidden">No tienes amigos para invitar.</p>
+    <p id="party-lobby-error" class="error-text"></p>
+  </section>
+
+  <div id="party-bar" class="party-bar hidden">
+    <div class="party-bar-info">
+      <span id="party-bar-mode">DUO</span>
+      <span id="party-bar-members"></span>
+    </div>
+    <button id="party-bar-open" class="btn-secondary">Ver lobby</button>
+  </div>
+
+  <section id="view-tournaments" class="view hidden">
+    <div class="ranking-head">
+      <h2 class="headline small">Torneos</h2>
+      <button id="tournaments-back" class="btn-ghost">Volver</button>
+    </div>
+    <p class="sub small">Inscripciones, premios y clasificación en tiempo real.</p>
+
+    <div id="tournament-admin" class="news-admin hidden">
+      <h3 class="store-section-title">Crear torneo</h3>
+      <label for="t-title">Título</label>
+      <input id="t-title" maxlength="80" placeholder="Torneo de fin de semana" autocomplete="off" />
+      <label for="t-desc">Descripción</label>
+      <textarea id="t-desc" maxlength="500" rows="2" placeholder="Detalles del torneo…"></textarea>
+      <label for="t-prize">Premio</label>
+      <input id="t-prize" maxlength="200" placeholder="100 monedas + color exclusivo" autocomplete="off" />
+      <label for="t-start">Fecha y hora de inicio</label>
+      <input id="t-start" type="datetime-local" />
+      <label for="t-end">Fin automático (opcional)</label>
+      <input id="t-end" type="datetime-local" />
+      <div class="t-form-row">
+        <div>
+          <label for="t-min-wins">Mín. victorias</label>
+          <input id="t-min-wins" type="number" min="0" value="0" />
+        </div>
+        <div>
+          <label for="t-min-streak">Mín. racha</label>
+          <input id="t-min-streak" type="number" min="0" value="0" />
+        </div>
+        <div>
+          <label for="t-max">Máx. jugadores</label>
+          <input id="t-max" type="number" min="2" max="128" value="16" />
+        </div>
+      </div>
+      <label for="t-mode">Formato de equipo</label>
+      <select id="t-mode">
+        <option value="SOLO">SOLO (1 jugador)</option>
+        <option value="DUO">DUO (2 jugadores)</option>
+        <option value="TRIO">TRIO (3 jugadores)</option>
+        <option value="SQUAD">SQUAD (4 jugadores)</option>
+      </select>
+      <label for="t-team-based">
+        <input type="checkbox" id="t-team-based" /> Torneo por equipos
+      </label>
+      <label for="t-status">Estado</label>
+      <select id="t-status">
+        <option value="open">Inscripciones abiertas</option>
+        <option value="upcoming">Próximamente</option>
+        <option value="live">En curso</option>
+        <option value="finished">Finalizado</option>
+        <option value="cancelled">Cancelado</option>
+      </select>
+      <p id="t-form-error" class="error-text"></p>
+      <button id="t-create" class="btn-primary full">Crear torneo</button>
+    </div>
+
+    <div id="tournaments-list" class="tournaments-list"></div>
+    <p id="tournaments-empty" class="hint hidden">No hay torneos todavía.</p>
+  </section>
+
+  <section id="view-tournament-detail" class="view hidden">
+    <div class="ranking-head">
+      <h2 class="headline small" id="td-title">Torneo</h2>
+      <button id="td-back" class="btn-ghost">Volver</button>
+    </div>
+    <p class="sub small" id="td-meta"></p>
+    <p id="td-desc" class="news-body"></p>
+    <div class="td-prize-box">
+      <span class="td-prize-label">Premio</span>
+      <span id="td-prize" class="td-prize-value">—</span>
+    </div>
+    <div class="td-reqs" id="td-reqs"></div>
+    <div class="td-actions" id="td-actions"></div>
+    <p id="td-error" class="error-text"></p>
+
+    <h3 class="store-section-title">Clasificación</h3>
+    <ol id="td-leaderboard" class="ranking-list"></ol>
+    <p id="td-lb-empty" class="hint hidden">Aún no hay inscritos.</p>
+
+    <div id="td-admin" class="news-admin hidden">
+      <h3 class="store-section-title">Control del torneo</h3>
+      <label for="td-status-select">Cambiar estado</label>
+      <select id="td-status-select">
+        <option value="upcoming">Próximamente</option>
+        <option value="open">Inscripciones abiertas</option>
+        <option value="live">En curso</option>
+        <option value="finished">Finalizado</option>
+        <option value="cancelled">Cancelado</option>
+      </select>
+      <button id="td-save-status" class="btn-secondary full">Guardar estado</button>
+      <button id="td-delete" class="news-delete" style="margin-top:10px;width:100%;padding:10px;">Borrar torneo</button>
+      <h3 class="store-section-title">Editar puntuación</h3>
+      <label for="td-score-player">Jugador (UID o nombre en lista)</label>
+      <select id="td-score-player"></select>
+      <div class="t-form-row">
+        <div>
+          <label for="td-score-points">Puntos</label>
+          <input id="td-score-points" type="number" min="0" value="0" />
+        </div>
+        <div>
+          <label for="td-score-wins">Victorias</label>
+          <input id="td-score-wins" type="number" min="0" value="0" />
+        </div>
+        <div>
+          <label for="td-score-losses">Derrotas</label>
+          <input id="td-score-losses" type="number" min="0" value="0" />
+        </div>
+      </div>
+      <button id="td-save-score" class="btn-primary full">Actualizar puntuación</button>
+    </div>
+  </section>
+
+  <section id="view-news" class="view hidden">
+    <div class="ranking-head">
+      <h2 class="headline small">Novedades</h2>
+      <button id="news-back" class="btn-ghost">Volver</button>
+    </div>
+    <p class="sub small">Anuncios y cambios del juego. Se actualizan en tiempo real.</p>
+
+    <div id="news-admin" class="news-admin hidden">
+      <h3 class="store-section-title">Publicar novedad</h3>
+      <label for="news-title-input">Título</label>
+      <input id="news-title-input" maxlength="80" placeholder="NUEVO FIX" autocomplete="off" />
+      <label for="news-body-input">Mensaje</label>
+      <textarea id="news-body-input" maxlength="2000" rows="4" placeholder="Hemos arreglado el sistema de…"></textarea>
+      <p id="news-form-error" class="error-text"></p>
+      <button id="news-publish" class="btn-primary full">Publicar</button>
+    </div>
+
+    <div id="news-list" class="news-list"></div>
+    <p id="news-empty" class="hint hidden">Todavía no hay novedades.</p>
+  </section>
+
+  <section id="view-mode-select" class="view hidden">
+    <h2 class="headline small">Elige el modo</h2>
+    <p class="sub">Selecciona cuántos jugadores por equipo. Se buscará gente con el mismo modo.</p>
+    <div class="mode-grid" id="mode-grid">
+      <button class="mode-card" data-mode="1v1">
+        <span class="mode-title">1 vs 1</span>
+        <span class="mode-desc">2 jugadores · Tablero 3×3</span>
+      </button>
+      <button class="mode-card" data-mode="2v2">
+        <span class="mode-title">2 vs 2</span>
+        <span class="mode-desc">4 jugadores · Tablero 5×5</span>
+      </button>
+      <button class="mode-card" data-mode="3v3">
+        <span class="mode-title">3 vs 3</span>
+        <span class="mode-desc">6 jugadores · Tablero 7×7</span>
+      </button>
+      <button class="mode-card" data-mode="4v4">
+        <span class="mode-title">4 vs 4</span>
+        <span class="mode-desc">8 jugadores · Tablero 9×9</span>
+      </button>
+    </div>
+    <button id="mode-back" class="btn-ghost">Volver</button>
+  </section>
+
+  <section id="view-searching" class="view hidden">
+    <h2 class="headline small">Buscando rival…</h2>
+    <p class="sub" id="searching-mode-label">En cuanto haya alguien libre, empezáis directamente.</p>
+    <button id="cancel-search" class="btn-ghost">Cancelar búsqueda</button>
+  </section>
+  
+  <section id="view-waiting" class="view hidden">
+    <h2 class="headline small">Esperando rival…</h2>
+    <p class="sub">Comparte este código con la otra persona:</p>
+    <div class="room-code" id="room-code-display">-----</div>
+    <button id="copy-code" class="btn-secondary">Copiar código</button>
+    <p class="hint">La partida empezará automáticamente en cuanto alguien se una.</p>
+    <button id="cancel-waiting" class="btn-ghost">Cancelar</button>
+  </section>
+
+  <section id="view-lobby" class="view hidden">
+    <h2 class="headline small" id="lobby-title">Sala de espera</h2>
+    <p class="sub" id="lobby-mode-label">Modo 1 vs 1</p>
+    <p class="hint" id="lobby-status">Esperando jugadores…</p>
+    <div class="teams-row">
+      <div class="team team-blue">
+        <h3 class="team-name">Equipo Azul</h3>
+        <ul id="team-blue-list" class="team-list"></ul>
+      </div>
+      <div class="team team-red">
+        <h3 class="team-name">Equipo Rojo</h3>
+        <ul id="team-red-list" class="team-list"></ul>
+      </div>
+    </div>
+    <button id="lobby-cancel" class="btn-ghost">Salir de la sala</button>
+  </section>
+  
+  <section id="view-game" class="view hidden">
+    <div class="game-head">
+      <div class="players-row">
+        <div class="player-tag" id="tag-x">
+          <span class="sym">X</span>
+          <span class="pinfo">
+            <span class="pname" id="name-x">—</span>
+            <span class="streak" id="streak-x"></span>
+          </span>
+        </div>
+        <span class="vs">vs</span>
+        <div class="player-tag" id="tag-o">
+          <span class="sym">O</span>
+          <span class="pinfo">
+            <span class="pname" id="name-o">—</span>
+            <span class="streak" id="streak-o"></span>
+          </span>
+        </div>
+      </div>
+      <p id="status-line" class="status-line">Turno de X</p>
+      <div class="timer-wrap" id="timer-wrap">
+        <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+        <span class="timer-value" id="timer-value"></span>
+      </div>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <div class="game-actions">
+      <button id="leave-btn" class="btn-ghost">Salir al menú</button>
+    </div>
+  </section>
+
+</div>
+
+<div id="welcome-modal" class="modal hidden">
+  <div class="modal-card">
+    <p class="welcome-version">RayaLive v<span id="welcome-version-num">3.0</span></p>
+    <h3>Creado por <span id="welcome-creator">—</span></h3>
+    <p class="sub small">Vienen cambios muy potentes. ¡Mantente atento!</p>
+    <button id="welcome-close" class="btn-primary full">Entendido</button>
+  </div>
+</div>
+
+<div id="name-modal" class="modal hidden">
+  <div class="modal-card">
+    <h3>¿Cómo te llamas?</h3>
+    <p class="sub small">Este nombre lo verán los demás jugadores en la partida. Tiene que ser único: no puede repetirse con el de otra persona.</p>
+    <input id="name-input" maxlength="20" placeholder="Tu nombre" autocomplete="off" />
+    <p id="name-error" class="error-text"></p>
+    <button id="name-save" class="btn-primary full">Guardar</button>
+    <button id="name-close" class="btn-ghost hidden">Cerrar</button>
+
+    <div class="modal-stats">
+      <p class="modal-stats-title">Tus estadísticas</p>
+      <div class="stats-grid" id="own-stats-grid"></div>
+    </div>
+  </div>
+</div>
+
+<div id="player-stats-modal" class="modal hidden">
+  <div class="modal-card">
+    <h3 id="player-stats-name">Jugador</h3>
+    <div class="stats-grid" id="player-stats-grid"></div>
+    <button id="player-stats-close" class="btn-ghost">Cerrar</button>
+  </div>
+</div>
+
+<div id="result-modal" class="modal hidden">
+  <div class="modal-card">
+    <h2 id="result-title" class="result-title">—</h2>
+
+    <div id="rematch-ask-box" class="rematch-box">
+      <button id="rematch-ask-btn" class="btn-primary full">Pedir revancha</button>
+      <p id="rematch-waiting-text" class="hint hidden">Esperando respuesta del rival…</p>
+    </div>
+
+    <div id="rematch-request-box" class="rematch-box hidden">
+      <p id="rematch-request-text" class="sub small">Tu rival quiere la revancha.</p>
+      <div class="rematch-actions">
+        <button id="rematch-accept" class="btn-primary">Aceptar</button>
+        <button id="rematch-reject" class="btn-secondary">Rechazar</button>
+      </div>
+    </div>
+
+    <button id="result-leave-btn" class="btn-ghost">Salir al menú</button>
+  </div>
+</div>
+
+<div id="banned-screen" class="banned-screen hidden">
+  <div class="banned-card">
+    <h1 class="banned-title">BANEADO</h1>
+    <p class="banned-label">Motivo</p>
+    <p id="banned-reason" class="banned-text">—</p>
+    <p class="banned-label">Duración</p>
+    <p id="banned-until" class="banned-text">—</p>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
