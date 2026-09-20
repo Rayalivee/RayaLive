@@ -1,4 +1,4 @@
-const CACHE_NAME = "rayalive-v18";
+const CACHE_NAME = "rayalive-v42";
 
 const APP_SHELL = [
   "./",
