@@ -11,5 +11,5 @@ export const firebaseConfig = {
 
 export const VIP_NAME = "themontes";
 
-export const APP_VERSION = "3.0";
+export const APP_VERSION = "20.0";
 export const CREATOR_NAME = "themontes";
