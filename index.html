@@ -23,7 +23,6 @@
   <header class="top">
     <div class="brand">
       
-      <span class="brand-mark" aria-hidden="true"></span>
       <span class="brand-name">RayaLive</span>
     </div>
     <button id="user-chip" class="user-chip" title="Cambiar nombre">
@@ -81,6 +80,10 @@
       <button class="option-card" id="btn-inventory">
         <span class="option-title">Inventario</span>
         <span class="option-desc">Equipa los colores que ya has comprado.</span>
+      </button>
+      <button class="option-card" id="btn-settings">
+        <span class="option-title">Configuración</span>
+        <span class="option-desc">Tema claro/oscuro e información de la app.</span>
       </button>
     </div>
 
@@ -247,6 +250,18 @@
       <input id="t-start" type="datetime-local" />
       <label for="t-end">Fin automático (opcional)</label>
       <input id="t-end" type="datetime-local" />
+      <label class="check-option" for="t-schedule-start">
+        <input type="checkbox" id="t-schedule-start" checked />
+        <span>Empezar solo a la hora de inicio (hasta entonces solo se pueden inscribir)</span>
+      </label>
+      <label class="check-option" for="t-limit-games-check">
+        <input type="checkbox" id="t-limit-games-check" />
+        <span>Limitar el número de partidas por jugador (opcional)</span>
+      </label>
+      <div id="t-max-games-wrap" class="hidden">
+        <label for="t-max-games" id="t-max-games-label">Máximo de partidas por jugador</label>
+        <input id="t-max-games" type="number" min="1" max="500" value="20" />
+      </div>
       <div class="t-form-row">
         <div>
           <label for="t-min-wins">Mín. victorias</label>
@@ -268,9 +283,20 @@
         <option value="TRIO">TRIO (3 jugadores)</option>
         <option value="SQUAD">SQUAD (4 jugadores)</option>
       </select>
-      <label for="t-team-based">
-        <input type="checkbox" id="t-team-based" /> Torneo por equipos
+      <label class="check-option" for="t-team-based">
+        <input type="checkbox" id="t-team-based" />
+        <span>Torneo por equipos</span>
       </label>
+      <label class="check-option" for="t-invite-only">
+        <input type="checkbox" id="t-invite-only" />
+        <span>Solo jugadores seleccionados (lista de invitados)</span>
+      </label>
+      <div id="t-invite-wrap" class="hidden">
+        <p class="hint" style="margin:4px 0 8px;">Marca a quién puede entrar. El resto verá que no puede unirse.</p>
+        <input id="t-invite-filter" type="text" placeholder="Buscar jugador…" autocomplete="off" />
+        <div id="t-invite-list" class="invite-player-list"></div>
+        <p id="t-invite-count" class="hint">0 seleccionados</p>
+      </div>
       <label for="t-status">Estado</label>
       <select id="t-status">
         <option value="open">Inscripciones abiertas</option>
@@ -451,11 +477,73 @@
 
 </div>
 
+
+  <section id="view-settings" class="view hidden">
+    <div class="settings-wrap">
+      <div class="ranking-head settings-head">
+        <h2 class="headline small">Configuración</h2>
+        <button type="button" id="settings-back" class="btn-ghost">Volver</button>
+      </div>
+      <p class="sub small settings-intro">Tema e información de la aplicación.</p>
+
+      <div class="settings-card">
+        <h3 class="store-section-title">Apariencia</h3>
+        <label class="settings-toggle" for="theme-toggle">
+          <span class="settings-toggle-text">
+            <strong>Modo oscuro</strong>
+            <span class="hint" id="theme-hint">Tema claro activo</span>
+          </span>
+          <span class="switch">
+            <input type="checkbox" id="theme-toggle" />
+            <span class="switch-slider"></span>
+          </span>
+        </label>
+      </div>
+
+      <div class="settings-card">
+        <h3 class="store-section-title">Estado de servicios</h3>
+        <div class="settings-status-list" id="settings-status-list">
+          <div class="settings-status-row">
+            <span class="status-name">Online</span>
+            <span class="settings-status-badge check" data-status="online"><span class="status-dot"></span><span class="status-label">Comprobando…</span></span>
+          </div>
+          <div class="settings-status-row">
+            <span class="status-name">Torneos</span>
+            <span class="settings-status-badge check" data-status="tournaments"><span class="status-dot"></span><span class="status-label">Comprobando…</span></span>
+          </div>
+          <div class="settings-status-row">
+            <span class="status-name">Matchmaking</span>
+            <span class="settings-status-badge check" data-status="matchmaking"><span class="status-dot"></span><span class="status-label">Comprobando…</span></span>
+          </div>
+          <div class="settings-status-row">
+            <span class="status-name">Novedades</span>
+            <span class="settings-status-badge check" data-status="news"><span class="status-dot"></span><span class="status-label">Comprobando…</span></span>
+          </div>
+          <div class="settings-status-row">
+            <span class="status-name">Amigos</span>
+            <span class="settings-status-badge check" data-status="friends"><span class="status-dot"></span><span class="status-label">Comprobando…</span></span>
+          </div>
+        </div>
+        <p class="hint settings-footer" id="settings-status-updated" style="margin-top:10px;">—</p>
+      </div>
+
+      <div class="settings-card">
+        <h3 class="store-section-title">Información</h3>
+        <div class="settings-info">
+          <div class="settings-row"><span>App</span><strong>RayaLive</strong></div>
+          <div class="settings-row"><span>Versión</span><strong id="settings-version">3.0</strong></div>
+          <div class="settings-row"><span>Modo</span><strong>Online · Torneos · Amigos</strong></div>
+        </div>
+        <p class="hint settings-footer">Creado para competir en partidas rápidas y torneos en tiempo real.</p>
+      </div>
+    </div>
+  </section>
+
 <div id="welcome-modal" class="modal hidden">
   <div class="modal-card">
     <p class="welcome-version">RayaLive v<span id="welcome-version-num">3.0</span></p>
     <h3>Creado por <span id="welcome-creator">—</span></h3>
-    <p class="sub small">Bienvenido a RayaLive!</p>
+    <p class="sub small">Vienen cambios muy potentes. ¡Mantente atento!</p>
     <button id="welcome-close" class="btn-primary full">Entendido</button>
   </div>
 </div>
@@ -502,6 +590,27 @@
     </div>
 
     <button id="result-leave-btn" class="btn-ghost">Salir al menú</button>
+  </div>
+</div>
+
+<div id="match-history-modal" class="modal hidden">
+  <div class="modal-card match-history-card">
+    <h2 class="result-title" id="mh-title">Partidas</h2>
+    <p class="sub small" id="mh-subtitle"></p>
+    <div id="mh-list" class="mh-list"></div>
+    <button type="button" class="btn-ghost full" id="mh-close">Cerrar</button>
+  </div>
+</div>
+
+<div id="tournament-next-modal" class="modal hidden">
+  <div class="modal-card">
+    <h2 class="result-title">¿Buscar nueva partida?</h2>
+    <p class="sub small" id="tournament-next-text">El torneo sigue en curso.</p>
+    <p class="status-line" id="tournament-next-countdown">3…</p>
+    <div class="rematch-actions" style="margin-top:12px;">
+      <button id="tournament-next-yes" class="btn-primary">Sí</button>
+      <button id="tournament-next-no" class="btn-secondary">Salir</button>
+    </div>
   </div>
 </div>
 
