@@ -89,6 +89,20 @@
             ".read": "auth != null",
             ".write": "auth != null && (auth.uid === $uid || root.child('tournaments').child($tid).child('players').child(auth.uid).exists())"
           }
+        },
+        "status": {
+          ".write": "auth != null && (root.child('usernames').child('themontes').val() === auth.uid || (data.val() === 'upcoming' && newData.val() === 'live' &&   data.parent().child('startAt').isNumber() && now >= data.parent().child('startAt').val()) || (data.val() === 'open' && newData.val() === 'live' &&   data.parent().child('startAt').isNumber() && now >= data.parent().child('startAt').val()) || (newData.val() === 'finished' && data.parent().child('endAt').isNumber() &&   data.parent().child('endAt').val() > 1577836800000 && now >= data.parent().child('endAt').val()))"
+        },
+        "lastOpponent": {
+          "$uid": {
+            ".write": "auth != null && (auth.uid === $uid || root.child('tournaments').child($tid).child('players').child(auth.uid).exists())"
+          }
+        },
+        "history": {
+          ".read": "auth != null",
+          "$hid": {
+            ".write": "auth != null && root.child('tournaments').child($tid).child('players').child(auth.uid).exists()"
+          }
         }
       }
     },
